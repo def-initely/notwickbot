@@ -1,0 +1,27 @@
+name: Generate square favicon
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  favicon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Create square favicon
+        run: |
+          convert logo.png -gravity center -crop 480x480+0+0 +repage -resize 192x192 favicon.png
+
+      - name: Commit favicon
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add favicon.png
+          git diff --cached --quiet || git commit -m "Generate square favicon"
+          git push
